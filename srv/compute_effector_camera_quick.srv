@@ -1,0 +1,7 @@
+# This service computes the effector to camera transformation from 
+# data provided in parameters
+#
+calibration/TransformArray camera_object
+calibration/TransformArray world_effector
+---
+geometry_msgs/Transform effector_camera
