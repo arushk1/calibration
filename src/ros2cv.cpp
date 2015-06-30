@@ -142,14 +142,22 @@ public:
     cv::waitKey(3);
 
     image_pub_.publish(cv_ptr->toImageMsg());
-
-
   }
 
 
   void PoseCb(const geometry_msgs::PoseStampedConstPtr &msg){
 
     w2d.translation.x = msg->pose.position.x;
+    w2d.translation.y = msg->pose.position.y;
+    w2d.translation.z = msg->pose.position.z;
+
+    w2d.rotation.w = msg->pose.orientation.w;
+    w2d.rotation.x = msg->pose.orientation.x;
+    w2d.rotation.y = msg->pose.orientation.y;
+    w2d.rotation.z = msg->pose.orientation.z;
+
+    world_effector_publisher_.publish(w2d);
+
 
   }
 };
