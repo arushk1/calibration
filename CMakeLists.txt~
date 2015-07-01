@@ -105,6 +105,11 @@ install(
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
+add_executable(ros2cv src/ros2cv.cpp)
+
+target_link_libraries(ros2cv
+   ${catkin_LIBRARIES}
+)
 
 add_executable(publisher_node src/publisher_node.cpp src/publisher.cpp include/publisher.h)
 

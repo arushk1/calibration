@@ -34,7 +34,7 @@
  * not clear to you.
  *
  * Description:
- * Client node
+ * File containing names of topics or services used all accross the package
  *
  * Authors:
  * Filip Novotny
@@ -43,44 +43,26 @@
  *****************************************************************************/
 
 /*!
-  \file client.h
-  \brief Client node calling a quick compute service, a compute service and 2 publishing to world_effector_topic and camera_object_topic.
+  \file names.h
+  \brief File containing names of topics or services used all accross the package
 */
 
-#ifndef __visp_hand2eye_calibration_CLIENT_H__
-#define __visp_hand2eye_calibration_CLIENT_H__
-#include "ros/ros.h"
-#include "geometry_msgs/Transform.h"
-#include "visp_hand2eye_calibration/compute_effector_camera.h"
-#include "visp_hand2eye_calibration/compute_effector_camera_quick.h"
-#include "visp_hand2eye_calibration/reset.h"
+#ifndef __visp_hand2eye_calibration_NAMES_H__
+# define __visp_hand2eye_calibration_NAMES_H__
+# include <string>
 
-namespace visp_hand2eye_calibration{
-  class Client{
-  private:
-    ros::NodeHandle n_;
-    ros::Publisher camera_object_publisher_;
-    ros::Publisher world_effector_publisher_;
+// define topic and service names for the visp_hand2eye_calibration package.
+namespace visp_hand2eye_calibration
+{
+  extern std::string node_prefix;
+  extern std::string camera_object_topic;
+  extern std::string camera_object_sim_topic;
+  extern std::string world_effector_topic;
+  extern std::string compute_effector_camera_service;
+  extern std::string compute_effector_camera_quick_service;
 
-    ros::Subscriber drone_pose_subscriber_;
-
-    ros::ServiceClient reset_service_;
-    ros::ServiceClient compute_effector_camera_service_;
-    ros::ServiceClient compute_effector_camera_quick_service_;
-
-    visp_hand2eye_calibration::reset reset_comm;
-    visp_hand2eye_calibration::compute_effector_camera emc_comm;
-    visp_hand2eye_calibration::compute_effector_camera_quick emc_quick_comm;
-
-
-  public:
-    Client();
-
-    void initAndSimulate();
-    void computeFromTopicStream();
-    void computeUsingQuickService();
-    void Simulator();
-    void Publisher();
- };
+  extern std::string reset_service;
 }
+
 #endif
+

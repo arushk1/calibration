@@ -47,13 +47,14 @@
   \brief File containing names of topics or services used all accross the package
 */
 
-#include "names.h"
+#include "./../include/names.h"
 #include "ros/ros.h"
 
 namespace visp_hand2eye_calibration
 {
   std::string node_prefix("/");
   std::string camera_object_topic("camera_object");
+  std::string camera_object_sim_topic("camera_object_sim");
   std::string world_effector_topic("world_effector");
   std::string compute_effector_camera_service("compute_effector_camera");
   std::string compute_effector_camera_quick_service("compute_effector_camera_quick");  
@@ -63,6 +64,7 @@ namespace visp_hand2eye_calibration
     if (ros::names::remap("node_prefix") != "node_prefix") {
       node_prefix = ros::names::remap("node_prefix");
       camera_object_topic = node_prefix + "camera_object";
+      camera_object_sim_topic = node_prefix + "camera_object_sim";
       world_effector_topic = node_prefix + "world_effector";
       compute_effector_camera_service = node_prefix + "compute_effector_camera";
       compute_effector_camera_quick_service = node_prefix + "compute_effector_camera_quick";

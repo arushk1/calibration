@@ -47,7 +47,7 @@
   \brief Entry point for calibrator node
 */
 
-#include "calibrator.h"
+#include "./../include/calibrator.h"
 #include "ros/ros.h"
 
 int main(int argc, char **argv)

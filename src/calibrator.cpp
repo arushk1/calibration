@@ -47,9 +47,9 @@
   \brief Calibrator node implementing a quick compute service, a compute service and 2 subscribers to world_effector_topic and camera_object_topic.
 */
 
-#include "calibrator.h"
+#include "./../include/calibrator.h"
 #include <visp_bridge/3dpose.h>
-#include "names.h"
+#include "./../include/names.h"
 #include <visp/vpCalibration.h>
 #include <visp/vpHomogeneousMatrix.h>
 
