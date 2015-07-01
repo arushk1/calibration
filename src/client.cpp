@@ -188,7 +188,7 @@ void Client::Publisher(){
     }
 
 
-    ros::Duration(30).sleep();
+    ros::Duration(20).sleep();
 
 }
 

@@ -17,14 +17,23 @@ static const std::string OPENCV_WINDOW = "Image window";
 
 using namespace cv;
 using namespace std;
+using namespace tf;
+
+tf::StampedTransform c2otf;
 
 Mat intrinsics = Mat(Size(3,3), CV_64F);
 Mat distortion = Mat(Size(1,5), CV_64F);
+
+Mat rvec = Mat(Size(3,1), CV_64F);
+Mat tvec = Mat(Size(3,1), CV_64F);
+
 geometry_msgs::Transform c2o;
 tf::Quaternion q;
-geometry_msgs::Quaternion qc2o;
 geometry_msgs::Transform w2d;
-geometry_msgs::Transform qw2d;
+
+geometry_msgs::Transform invc2o;
+tf::Transform tmptf;
+
 
 
 class ImageConverter
@@ -83,9 +92,9 @@ public:
 
     vector<Point2f> ptvec;
     vector<Point3f> boardPoints;
-    Mat rvec = Mat(Size(3,1), CV_64F);
-    Mat tvec = Mat(Size(3,1), CV_64F);
     cv_bridge::CvImagePtr cv_ptr;
+
+    tf::TransformBroadcaster tfbr;
 
     for (int i=0; i<8; i++)
     {
@@ -130,18 +139,41 @@ public:
 
     q.setRPY(rvec.at<double>(0,2), rvec.at<double>(0,1), rvec.at<double>(0,0));
 
-    qc2o.w = q.getW();
-    qc2o.x = q.getX();
-    qc2o.y = q.getY();
-    qc2o.z = q.getZ();
-    c2o.rotation = qc2o;
+    c2o.rotation.w = q.getW();
+    c2o.rotation.x = q.getX();
+    c2o.rotation.y = q.getY();
+    c2o.rotation.z = q.getZ();
 
-    camera_object_publisher_.publish(c2o);
+    tmptf.setOrigin(tf::Vector3(c2o.translation.x, c2o.translation.y, c2o.translation.z));
+    tmptf.setRotation(q);
+    tmptf.inverse();
+
+
+    invc2o.translation.x = tmptf.getOrigin().getX();
+    invc2o.translation.y = tmptf.getOrigin().getY();
+    invc2o.translation.z = tmptf.getOrigin().getZ();
+
+    invc2o.rotation.w = tmptf.getRotation().getW();
+    invc2o.rotation.x = tmptf.getRotation().getX();
+    invc2o.rotation.y = tmptf.getRotation().getY();
+    invc2o.rotation.z = tmptf.getRotation().getZ();
+
+
+/*
+    c2otf.setOrigin(tf::Vector3(c2o.translation.x, c2o.translation.y, c2o.translation.z));
+    c2otf.setRotation(q);
+    c2otf.frame_id_ = "camera";
+    c2otf.child_frame_id_ = "object";
+
+    tfbr.sendTransform(c2otf);
+*/
+    camera_object_publisher_.publish(invc2o);
 
     cv::imshow(OPENCV_WINDOW, cv_ptr->image);
     cv::waitKey(3);
 
     image_pub_.publish(cv_ptr->toImageMsg());
+
   }
 
 
