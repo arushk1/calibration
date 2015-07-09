@@ -15,8 +15,12 @@
 #include <geometry_msgs/Transform.h>
 #include <tf/transform_broadcaster.h>
 #include <vector>
+#include <message_filters/subscriber.h>
+#include <message_filters/time_synchronizer.h>
+#include <message_filters/synchronizer.h>
 
 using namespace cv;
+using namespace message_filters;
 
 
 
@@ -27,11 +31,18 @@ public:
 
   tf::StampedTransform c2otf;
 
-  Mat intrinsics = Mat(Size(3,3), CV_64F);
-  Mat distortion = Mat(Size(1,5), CV_64F);
+
+  Mat intrinsics = Mat::zeros(3, 3, CV_64F);
+  Mat distortion = Mat::zeros(1, 5, CV_64F);
 
   Mat rvec = Mat(Size(3,1), CV_64F);
   Mat tvec = Mat(Size(3,1), CV_64F);
+
+  Mat webcamImage, gray, one;
+
+  vector<Point2d> imagePoints, imageFramePoints, imageOrigin;
+  vector<Point3d> boardPoints, framePoints;
+
 
   geometry_msgs::Transform c2o;
   tf::Quaternion q;
@@ -55,6 +66,7 @@ public:
   void imageCb(const sensor_msgs::ImageConstPtr& msg);
   void PoseCb(const geometry_msgs::PoseStampedConstPtr &msg);
 
+  void image_pose_callback(const sensor_msgs::ImageConstPtr& img_msg, const geometry_msgs::PoseStampedConstPtr &pose_msg);
 };
 
 #endif
