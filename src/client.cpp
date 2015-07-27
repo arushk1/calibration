@@ -220,41 +220,6 @@ void Client::initAndSimulateUsingCam()
   simulateCameraMeasurements();
 
 }
-// } MM
-
-void Client::Simulator(){
-
-  ROS_INFO("Waiting for topics...");
-  ros::Duration(1.).sleep();
-  while(!reset_service_.call(reset_comm)){
-    if(!ros::ok()) return;
-    ros::Duration(1).sleep();
-  }
-
-  for (int i = 0; i < counter; i++){
-
-
-      geometry_msgs::Transform pose_c_o;
-      geometry_msgs::Transform pose_w_e;
-
-      pose_c_o.translation.x = camera_object[counter][0];
-      pose_c_o.translation.y = camera_object[counter][1];
-      pose_c_o.translation.z = camera_object[counter][2];
-
-      pose_w_e.translation.x = world_effector[counter][0];
-      pose_w_e.translation.y = world_effector[counter][1];
-      pose_w_e.translation.z = world_effector[counter][2];
-
-      camera_object_publisher_.publish(pose_c_o);
-      world_effector_publisher_.publish(pose_w_e);
-
-      cout << "SIMOUT" << endl;
-
-  }
-
-
-}
-
 
 void Client::Publisher(){
 
@@ -266,9 +231,10 @@ void Client::Publisher(){
     }
 
 
-    ros::Duration(20).sleep();
+    ros::Duration(60).sleep();
 
 }
+
 
 void Client::computeUsingQuickService()
 {

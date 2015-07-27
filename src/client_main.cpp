@@ -8,13 +8,13 @@ int main(int argc,char**argv){
 
   visp_hand2eye_calibration::Client ct;
 
-  ct.initAndSimulateUsingCam();
+  //ct.initAndSimulateUsingCam();
   // ct.Simulator();
 
-  //ct.Publisher();
+  ct.Publisher();
 
   //ct.computeUsingQuickService();
-  //ct.computeFromTopicStream();
+  ct.computeFromTopicStream();
 
   return 0 ;
 }

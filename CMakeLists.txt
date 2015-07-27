@@ -95,19 +95,25 @@ add_dependencies(calibration_client
   ${catkin_EXPORTED_TARGETS}
   ${PROJECT_NAME}_gencpp)
 
+  add_executable(sync_publisher
+    src/sync_publisher.cpp
+    include/client.h
+    src/client.cpp)
+
+  target_link_libraries(sync_publisher
+    calibration_common
+    ${catkin_LIBRARIES}
+    ${roscpp_LIBRARIES}
+    )
+
+
 install(
   TARGETS
+    sync_publisher
     calibration_calibrator
     calibration_client
     calibration_common
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
-
-
-add_executable(publisher_node src/publisher_node.cpp src/publisher.cpp include/publisher.h)
-
-target_link_libraries(publisher_node
-    ${catkin_LIBRARIES}
 )
