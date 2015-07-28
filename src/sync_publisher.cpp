@@ -7,7 +7,8 @@
 #include <geometry_msgs/Pose.h>
 #include "./../include/client.h"
 #include <iostream>
-
+#include "tf/tf.h"
+#include <tf/transform_broadcaster.h>
 
 using namespace message_filters;
 using namespace sensor_msgs;
@@ -22,9 +23,12 @@ geometry_msgs::Transform wld2eff;
 ros::Publisher camera_object_publisher_;
 ros::Publisher world_effector_publisher_;
 
-
 void callback(const PoseStampedConstPtr& posemsg, const PoseStampedConstPtr& trackermsg)
 {
+
+    tf::Transform tf_pub;
+    static tf::TransformBroadcaster br;
+
 
     cam2obj.translation.x = posemsg->pose.position.z;
     cam2obj.translation.y = -(posemsg->pose.position.x);
@@ -38,7 +42,15 @@ void callback(const PoseStampedConstPtr& posemsg, const PoseStampedConstPtr& tra
 
     ROS_INFO_STREAM("TS CheckerPose: " << posemsg->header.stamp);
     ROS_INFO_STREAM("TS Optitrack: " << trackermsg->header.stamp);
+    tf::Quaternion q;
+    q.setW(cam2obj.rotation.w);
+    q.setX(cam2obj.rotation.x);
+    q.setY(cam2obj.rotation.y);
+    q.setZ(cam2obj.rotation.z);
 
+    tf_pub.setOrigin(tf::Vector3(cam2obj.translation.x/100, cam2obj.translation.y/100, cam2obj.translation.z/100));
+    tf_pub.setRotation(q);
+    br.sendTransform(tf::StampedTransform(tf_pub, ros::Time::now(), "/camera_link", "/checker_frame"));
 
     camera_object_publisher_.publish(cam2obj);
     world_effector_publisher_.publish(wld2eff);
