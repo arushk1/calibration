@@ -28,6 +28,17 @@ void callback(const PoseStampedConstPtr& posemsg, const PoseStampedConstPtr& tra
 
     tf::Transform tf_pub;
     static tf::TransformBroadcaster br;
+    tf::Quaternion rotX;
+    tf::Quaternion rotZ;
+    rotX.setW(0);
+    rotX.setX(1);
+    rotX.setY(0);
+    rotX.setZ(0);
+
+    rotZ.setW(0);
+    rotZ.setX(0);
+    rotZ.setY(0);
+    rotZ.setZ(1);
 
 
     cam2obj.translation.x = posemsg->pose.position.z;
@@ -48,9 +59,12 @@ void callback(const PoseStampedConstPtr& posemsg, const PoseStampedConstPtr& tra
     q.setY(cam2obj.rotation.y);
     q.setZ(cam2obj.rotation.z);
 
+    q *= rotX;
+    q *= rotZ;
+
     tf_pub.setOrigin(tf::Vector3(cam2obj.translation.x/100, cam2obj.translation.y/100, cam2obj.translation.z/100));
     tf_pub.setRotation(q);
-    br.sendTransform(tf::StampedTransform(tf_pub, ros::Time::now(), "/camera_link", "/checker_frame"));
+    br.sendTransform(tf::StampedTransform(tf_pub, ros::Time::now(), "/camera_rgb_optical_frame", "/checker_frame"));
 
     camera_object_publisher_.publish(cam2obj);
     world_effector_publisher_.publish(wld2eff);
@@ -70,8 +84,8 @@ int main(int argc, char** argv)
   message_filters::Subscriber<geometry_msgs::PoseStamped> checker_sub(nh, "/marker_extractor/pose", 100);
   message_filters::Subscriber<geometry_msgs::PoseStamped> tracker_sub(nh, "/optitrack/pixhawk/pose", 200);
 
-  camera_object_publisher_ = nh.advertise<geometry_msgs::Transform> ("camera_object", 1000);
-  world_effector_publisher_ = nh.advertise<geometry_msgs::Transform> ("world_effector", 1000);
+  camera_object_publisher_ = nh.advertise<geometry_msgs::Transform> ("camera_object1", 1000);
+  world_effector_publisher_ = nh.advertise<geometry_msgs::Transform> ("world_effector1", 1000);
 
   typedef sync_policies::ApproximateTime<PoseStamped, PoseStamped> MySyncPolicy;
   Synchronizer<MySyncPolicy> sync(MySyncPolicy(10), checker_sub, tracker_sub);
